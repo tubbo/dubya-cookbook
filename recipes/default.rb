@@ -39,6 +39,12 @@ git '/srv/dubya' do
   group 'dubya'
 end
 
+execute 'bundle install --jobs=4' do
+  cwd '/srv/dubya'
+  user 'dubya'
+  group 'dubya'
+end
+
 git '/srv/dubya/vendor/wiki' do
   repo node['dubya']['wiki']['repo']
   revision node['dubya']['wiki']['ref']
@@ -69,12 +75,13 @@ template '/etc/init.d/dubya.conf' do
   notifies :start, 'service[dubya]'
 end
 
-template '/etc/nginx/sites-available/dubya' do
-  source 'site.conf.erb'
-end
-
 file '/etc/nginx/sites-enabled/default' do
   action :remove
+end
+
+template '/etc/nginx/sites-available/dubya' do
+  source 'site.conf.erb'
+  variables directory: '/srv/dubya', domain: node['dubya']['fqdn']
 end
 
 nginx_site 'dubya' do
