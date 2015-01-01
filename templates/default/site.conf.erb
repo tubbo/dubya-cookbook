@@ -1,0 +1,24 @@
+upstream rack {
+  server unix://<%= @directory %>/tmp/rack.sock fail_timeout=0;
+}
+
+server {
+  listen 80;
+  server_name <%= @domain %>;
+  root <%= @directory %>/public;
+  try_files $uri/index.html $uri @dubya;
+
+  location @dubya {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_redirect off;
+    proxy_pass http://rack;
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+  }
+
+  error_page 500 502 503 504 /500.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+}

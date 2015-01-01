@@ -1,0 +1,9 @@
+description "dubya: the vimwiki server"
+version "master"
+
+respawn
+
+normal exit 0 TERM
+
+chdir /srv/dubya
+exec ./bin/dubya
