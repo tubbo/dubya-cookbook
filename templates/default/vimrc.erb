@@ -1,9 +1,22 @@
+" Set basic sane defaults
 set nocompatible
 set tabstop=2
 set expandtab
 set ruler
 set lines
 
+" Include plugins with Pathogen
 execute pathogen#infect()
 syntax on
 filetype plugin indent on
+
+" Configure Vimwiki to work with Dubya
+let vimwiki_path='<%= @directory %>/vendor/wiki'
+let vimwiki_html_path='<%= @directory %>/public'
+let g:vimwiki_list = [{  'path':vimwiki_path,
+                       \ 'path_html':vimwiki_html_path,
+                       \ 'template_path':vimwiki_html_path.'/assets/',
+                       \ 'template_default': 'default',
+                       \ 'template_ext': '.tpl',
+                       \ 'auto_export': 0}]
+
